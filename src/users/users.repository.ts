@@ -1,10 +1,10 @@
-import { User } from './user.entity.ts';
+import { User } from './entities/user.entity';
 import { DataSource, FindManyOptions, Repository } from 'typeorm';
 import uuid from 'uuid-with-v6';
 import createError from 'http-errors';
-import { SortDirection } from './get-users.dto.ts';
+import { SortDirection } from './dto/get-users.dto';
 export interface IUserRepository {
-  findAll(options: FindAllOptions): Promise<Array<User>>;
+  findAll(options?: FindAllOptions): Promise<Array<User>>;
   create(name: string, email: string): Promise<User>;
 }
 
@@ -16,17 +16,17 @@ export interface FindAllOptions {
   };
 }
 
-const DEFAULT_LIMIT = 100;
+export const DEFAULT_LIMIT = 100;
 
 export class UsersRepository implements IUserRepository {
   constructor(private readonly repository: Repository<User>) {}
-  async findAll(options: FindAllOptions): Promise<Array<User>> {
-    const { skip, limit: inputLimit, orderBy } = options;
+  async findAll(options?: FindAllOptions): Promise<Array<User>> {
+    const { skip, limit: inputLimit, orderBy } = options || {};
 
     const limit: number = inputLimit === undefined ? DEFAULT_LIMIT : inputLimit;
 
     const findOptions: FindManyOptions<User> = {
-      skip,
+      ...(skip && { skip }),
       take: limit,
     };
     const createdAt = orderBy?.createdAt;
@@ -48,6 +48,7 @@ export class UsersRepository implements IUserRepository {
     });
     try {
       return await this.repository.save(user);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (error.code === '23505') {
         throw createError.BadRequest('User already exists. Please use a different email address.');

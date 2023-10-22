@@ -2,9 +2,9 @@ import express, { NextFunction, Request, Response } from 'express';
 import { createUsersRepository } from './users.repository.ts';
 import { appDataSource } from '../data-source.ts';
 import { UsersService } from './users.service.ts';
-import { CreateUserDto } from './create-user.dto.ts';
+import { CreateUserDto } from './dto/create-user.dto.ts';
 import { validateQueryParams, validateRequestBody } from '../validation-middleware.ts';
-import { GetUsersDto } from './get-users.dto.ts';
+import { GetUsersDto } from './dto/get-users.dto.ts';
 const userRoutes = express.Router();
 
 const usersRepository = createUsersRepository(appDataSource);

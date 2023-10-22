@@ -18,6 +18,12 @@ To test:
 bun test
 ```
 
+To test and generate code coverage:
+
+```bash
+bun test --coverage
+```
+
 This project was created using `bun init` in bun v1.0.7. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
 
 ## Goal

@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { plainToInstance } from 'class-transformer';
 import { validate, ValidationError } from 'class-validator';
 
-async function validateRequest<T extends Record<string, unknown>>(data: T): Promise<string[] | null> {
+const validateRequest = async <T extends Record<string, unknown>>(data: T): Promise<string[] | null> => {
   try {
     const errors = await validate(data, {
       whitelist: true,
@@ -22,8 +22,8 @@ async function validateRequest<T extends Record<string, unknown>>(data: T): Prom
     console.error('Validation middleware error:', error);
     return ['Internal Server Error'];
   }
-}
-
+};
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const validateRequestBody = <T extends Record<string, any>>(dtoClass: new () => T) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     const dto = plainToInstance(dtoClass, req.body);
@@ -37,7 +37,7 @@ export const validateRequestBody = <T extends Record<string, any>>(dtoClass: new
     next();
   };
 };
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const validateQueryParams = <T extends Record<string, any>>(dtoClass: new () => T) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     const dto = plainToInstance(dtoClass, req.query, { enableImplicitConversion: true });

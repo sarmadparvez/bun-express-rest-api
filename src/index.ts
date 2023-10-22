@@ -16,6 +16,8 @@ initializeDatabase()
   .catch((err) => {
     console.error('Error during Database initialization:', err);
   });
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const errorHandler = (error: HttpError, request: Request, response: Response, next: NextFunction) => {
   const message = error.message || 'Internal Server Error';
   const status = error.status || 500;
