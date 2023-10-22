@@ -3,6 +3,7 @@ services:
   postgres:
     image: postgres:latest
     container_name: perspective-db
+    hostname: perspective-db
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=123456
@@ -12,6 +13,28 @@ services:
       - '5435:5432'
     volumes:
       - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD', 'pg_isready', '-q', '-d', 'perspective', '-U', 'postgres']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    image: perspective-api
+    container_name: perspective-api
+    build:
+      dockerfile: Dockerfile
+      context: .
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - '4112:4111'
+    volumes:
+      - ./src:/app/src
+    environment:
+      - DB_HOST=perspective-db
+      - DB_PORT=5432
 
 volumes:
   postgres-data:

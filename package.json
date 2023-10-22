@@ -1,5 +1,5 @@
 {
-  "name": "backend-worksample",
+  "name": "bun-express-rest-api",
   "module": "src/index.ts",
   "type": "module",
   "scripts": {

@@ -9,6 +9,7 @@ export const appDataSource = new DataSource({
   database: process.env.DB_NAME,
   entities: ['src/**/*.entity.ts'],
   synchronize: true,
+  ssl: false,
 });
 
 export const initializeDatabase = async (): Promise<DataSource> => {
