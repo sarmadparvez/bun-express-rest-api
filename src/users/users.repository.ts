@@ -1,9 +1,10 @@
 import { User } from './user.entity.ts';
 import { DataSource, Repository } from 'typeorm';
-
+import uuid from 'uuid-with-v6';
+import createError from 'http-errors';
 export interface IUserRepository {
   find(): Promise<Array<User>>;
-  save(user: User): Promise<User>;
+  create(name: string, email: string): Promise<User>;
 }
 
 export class UsersRepository implements IUserRepository {
@@ -12,9 +13,20 @@ export class UsersRepository implements IUserRepository {
     return this.repository.find();
   }
 
-  async save(user: User): Promise<User> {
-    const savedUser = await this.repository.save(user);
-    return savedUser;
+  async create(name: string, email: string): Promise<User> {
+    const user = new User({
+      id: uuid.v6(),
+      name,
+      email,
+    });
+    try {
+      return await this.repository.save(user);
+    } catch (error: any) {
+      if (error.code === '23505') {
+        throw createError.BadRequest('User already exists. Please use a different email address.');
+      }
+      throw error;
+    }
   }
 }
 

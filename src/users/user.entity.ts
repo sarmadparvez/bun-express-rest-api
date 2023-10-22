@@ -3,12 +3,12 @@ import { Entity, Column, CreateDateColumn, PrimaryColumn } from 'typeorm';
 @Entity()
 export class User {
   @PrimaryColumn({ type: 'uuid' })
-  id: number;
+  id: string;
 
   @Column()
   name: string;
 
-  @Column()
+  @Column({ unique: true })
   email: string;
 
   @CreateDateColumn()
