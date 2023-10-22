@@ -6,8 +6,6 @@ COPY . .
 
 RUN bun install
 
-# ARG PORT
-
 EXPOSE 3111
 
 CMD ["bun", "start:dev"]
