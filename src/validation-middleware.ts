@@ -24,7 +24,6 @@ async function validateRequest<T extends Record<string, unknown>>(data: T): Prom
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const validateRequestBody = <T extends Record<string, any>>(dtoClass: new () => T) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     const dto = plainToInstance(dtoClass, req.body);
@@ -39,10 +38,9 @@ export const validateRequestBody = <T extends Record<string, any>>(dtoClass: new
   };
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const validateQueryParams = <T extends Record<string, any>>(dtoClass: new () => T) => {
   return async (req: Request, res: Response, next: NextFunction) => {
-    const dto = plainToInstance(dtoClass, req.query);
+    const dto = plainToInstance(dtoClass, req.query, { enableImplicitConversion: true });
 
     const errors = await validateRequest(dto);
 

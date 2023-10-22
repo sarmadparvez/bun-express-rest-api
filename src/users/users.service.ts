@@ -1,15 +1,24 @@
-import { IUserRepository } from './users.repository.ts';
+import { FindAllOptions, IUserRepository } from './users.repository.ts';
 import { User } from './user.entity.ts';
 import { CreateUserDto } from './create-user.dto.ts';
 import createError, { BadRequest } from 'http-errors';
+import { GetUsersDto } from './get-users.dto.ts';
 
 export class UsersService {
-  private static instance: UsersService;
-
   constructor(private readonly userRepository: IUserRepository) {}
 
-  async findAll(): Promise<Array<User>> {
-    return this.userRepository.find();
+  async findAll(dto: GetUsersDto): Promise<Array<User>> {
+    const { skip, limit, created } = dto;
+
+    const query: FindAllOptions = {
+      skip,
+      limit,
+      orderBy: {
+        createdAt: created,
+      },
+    };
+
+    return this.userRepository.findAll(query);
   }
 
   async create(dto: CreateUserDto): Promise<User> {

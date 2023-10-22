@@ -3,14 +3,21 @@ import { createUsersRepository } from './users.repository.ts';
 import { appDataSource } from '../data-source.ts';
 import { UsersService } from './users.service.ts';
 import { CreateUserDto } from './create-user.dto.ts';
-import { validateRequestBody } from '../validation-middleware.ts';
+import { validateQueryParams, validateRequestBody } from '../validation-middleware.ts';
+import { GetUsersDto } from './get-users.dto.ts';
 const userRoutes = express.Router();
 
 const usersRepository = createUsersRepository(appDataSource);
 const usersService = new UsersService(usersRepository);
 
-userRoutes.get('', (req: Request, res: Response) => {
-  res.send([]).status(200);
+userRoutes.get('', validateQueryParams(GetUsersDto), async (req: Request, res: Response, next: NextFunction) => {
+  const getUsersDto: GetUsersDto = req.query;
+  try {
+    const user = await usersService.findAll(getUsersDto);
+    res.send(user).status(200);
+  } catch (error) {
+    next(error);
+  }
 });
 
 userRoutes.post('', validateRequestBody(CreateUserDto), async (req: Request, res: Response, next: NextFunction) => {
